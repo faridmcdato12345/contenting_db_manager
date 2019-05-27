@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('role_id')->nullable()->index();
-            $table->integer('is_active')->default(1);
+            $table->integer('is_active')->default(0);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
@@ -34,8 +34,5 @@ class CreateUsersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('users');
-    }
-    public function Role(){
-        return $this->belongsTo('App\Role');
     }
 }
