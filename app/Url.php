@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Client;
+use App\Account;
 use Illuminate\Database\Eloquent\Model;
 
 class Url extends Model

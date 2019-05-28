@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,6 +18,13 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware'=>'admin'], function (){
-    Route::resource('/admin', 'AdminController');
-    Route::resource('/client', 'ClientController');
+    Route::resource('/admin/users', 'AdminUserController');
+    Route::resource('/admin/cpanels', 'AdminCpanelController');
+    Route::resource('/admin/domains', 'AdminDomainController');
+    Route::resource('/admin/mailchimp', 'AdminMailChimpController');
+    Route::resource('/admin/plugins', 'AdminPluginController');
+    Route::resource('/admin/role', 'AdminRoleController');
+    Route::resource('/admin/urls', 'AdminUrlController');
+    Route::resource('/admin/youtubes', 'AdminYoutubeController');
+    Route::resource('/admin/clients', 'AdminClientController');
 });
