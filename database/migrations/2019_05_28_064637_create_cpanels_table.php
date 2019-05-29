@@ -16,9 +16,8 @@ class CreateCpanelsTable extends Migration
         Schema::create('cpanels', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('url');
-            $table->integer('cliend_id')->nullable()->unsigned();
-            $table->string('db_name')->nullable();
-            $table->string('db_username')->nullable();
+            $table->string('username');
+            $table->string('password');
             $table->timestamps();
         });
     }

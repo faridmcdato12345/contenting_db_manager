@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Url extends Model
 {
     protected $fillable = [
-        'url','db_name','db_username'
+        'url','db_name','db_username','username','password'
     ];
 
     public function client(){

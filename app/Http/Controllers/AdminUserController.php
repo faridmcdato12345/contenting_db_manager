@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use App\Role;
-
+use DataTables;
+use function compact;
 class AdminUserController extends Controller
 {
     /**
@@ -13,10 +14,27 @@ class AdminUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return view('admin.users.index', compact('users'));
+        // $users = User::all();
+        // return view('admin.users.index', compact('users'));
+        if ($request->ajax()) {
+            $data = User::latest()->get();
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+   
+                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
+   
+                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+    
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            
+        }
+        return view('admin.users.index');
     }
 
     /**

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ClientRequest;
+use Illuminate\Support\Facades\Session;
+use App\Url;
+use DataTables;
+use function compact;
 
 class AdminUrlController extends Controller
 {
@@ -11,9 +16,27 @@ class AdminUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // $urls = Url::all();
+        // return view('admin.urls.index', compact('urls'));
+        if ($request->ajax()) {
+            $data = Url::latest()->get();
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+   
+                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
+   
+                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+    
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            
+        }
+        return view('admin.urls.index');
     }
 
     /**
@@ -23,7 +46,7 @@ class AdminUrlController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.urls.create');
     }
 
     /**
@@ -34,7 +57,10 @@ class AdminUrlController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $url = $request->all();
+        Url::create($url);
+        Session::flash('created_url',$url['url'].' has been created');
+        return redirect('admin/urls/create');
     }
 
     /**
