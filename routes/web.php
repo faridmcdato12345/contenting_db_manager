@@ -13,9 +13,12 @@
 Route::get('/', function () {
     return redirect('/home');
 });
-
 Auth::routes();
-
+Route::get('/register',function(){
+    abort(404);
+});
+Route::get('/pinaka-kusog-na-admin','Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('/pinaka-kusog-na-admin','Auth\RegisterController@register')->name('superadminsave');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware'=>'admin'], function (){
     Route::resource('/admin/users', 'AdminUserController');
