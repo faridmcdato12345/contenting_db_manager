@@ -15,7 +15,6 @@
 </div><!-- /.container-fluid -->
 @endsection
 @section('content')
-    <p><a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Create New User</a></p>
     <table class="table table-bordered data-table">
         <thead>
             <tr>
@@ -25,7 +24,8 @@
                 <th>Role</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th width="280px">Action</th>
+                <th width="280px">Status</th>
+                <th width="280px">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -81,26 +81,28 @@
               {data: 'role_id', name: 'role_id'},
               {data: 'created_at', name: 'created at'},
               {data: 'updated_at', name: 'updated at'},
-              {data: 'action', name: 'action', orderable: false, searchable: true},
+              {data: 'status', name: 'status', orderable: false, searchable: true},
+              {data: 'actions', name: 'actions', orderable: false, searchable: true},
           ]
       });
        
-      $('#createNewProduct').click(function () {
+      $('#createNewUser').click(function () {
           $('#saveBtn').val("create-product");
           $('#product_id').val('');
           $('#productForm').trigger("reset");
-          $('#modelHeading').html("Create New Product");
+          $('#modelHeading').html("Create New User");
           $('#ajaxModel').modal('show');
       });
       
-      $('body').on('click', '.editProduct', function () {
+      $('body').on('click', '.editUser', function () {
         var product_id = $(this).data('id');
-        $.get("{{ route('clients.index') }}" +'/' + product_id +'/edit', function (data) {
-            $('#modelHeading').html("Edit Product");
+        $.get("{{ route('users.index') }}" +'/' + product_id +'/edit', function (data) {
+            $('#modelHeading').html("Edit User");
             $('#saveBtn').val("edit-user");
             $('#ajaxModel').modal('show');
-            $('#product_id').val(data.id);
             $('#name').val(data.name);
+            $('#role').val(data.role_id);
+            $('#role').val(data.role_id);
             $('#detail').val(data.detail);
         })
      });
@@ -128,7 +130,7 @@
         });
       });
       
-      $('body').on('click', '.deleteProduct', function () {
+      $('body').on('click', '.deleteUser', function () {
        
           var product_id = $(this).data("id");
           confirm("Are You sure want to delete !");

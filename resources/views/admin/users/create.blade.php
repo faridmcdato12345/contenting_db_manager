@@ -15,6 +15,9 @@
 </div>
 @endsection
 @section('content')
+@if(Session::has('created_user'))
+<p class="bg-success" style="font-weight: bold;font-size: 16px;padding: 10px 10px;">{{session('created_user')}}</p>
+@endif
     {!! Form::open(['method'=>'POST','action'=>'AdminUserController@store','files'=>true]) !!}
         <div class="form-group">
             {!! Form::label('name','Name:') !!}
@@ -27,22 +30,15 @@
         </div>
         <div class="form-group">
             {!! Form::label('role_id','Role:') !!}
-            {!! Form::select('user_type',[''=>'Choose option'] + $roles ,null,['class'=>'form-control']) !!}
+            {!! Form::select('role_id',[''=>'Choose option'] + $roles ,null,['class'=>'form-control']) !!}
         </div>
-         <div class="form-group">
+         {{-- <div class="form-group">
              {!! Form::label('file','Upload image:') !!}
              {!! Form::file('photo_id',['class'=>'form-control']) !!}
-         </div>
+         </div> --}}
         <div class="form-group">
             {!! Form::label('Password','Password:') !!}
-            <div class="row">
-                <div class="col-md-10">
-                    {!!  Form::password('password', ['class' => 'form-control']) !!}
-                </div>
-                <div class="col-md-2">
-                    <button class="btn-success btn form-control">Generate Password</button>
-                </div>
-            </div>
+            {!!  Form::text('password',$randompassword,['class' => 'form-control']) !!}
         </div>
         <div class="form-group">
             {!! Form::submit('Create User',['class'=>'form-control btn btn-primary']) !!}

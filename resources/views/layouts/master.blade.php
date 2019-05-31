@@ -10,15 +10,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>AdminLTE 3 | Starter</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
-  <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-    <link rel="stylesheet" href="{{asset('css/app.css')}}">
+  <title>Contenting</title>
+  <link rel="stylesheet" href="{{asset('libs/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{asset('libs/css/dataTables.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{asset('libs/css/jquery.dataTables.min.css')}}">
+  <link rel="stylesheet" href="{{asset('css/app.css')}}">
+  <script src="{{asset('libs/js/jquery.js')}}"></script>
+  <script src="{{asset('libs/js/jquery.validate.js')}}"></script>
+  <script src="{{asset('libs/js/bootstrap.min.js')}}"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -48,34 +47,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="navbar-nav ml-auto">
       <li class="dropdown user user-menu">
         <a href="#" class="nav-link" data-toggle="dropdown">
-          <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-          <span class="hidden-xs">Alexander Pierce</span>
+          <span class="hidden-xs">{{Auth::user()->name}}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <!-- User image -->
-          <li class="user-header">
-            <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-
-            <p>
-              Alexander Pierce - Web Developer
-              <small>Member since Nov. 2012</small>
-            </p>
-          </li>
-          <!-- Menu Body -->
-          <li class="user-body">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <a href="#">Followers</a>
-              </div>
-              <div class="col-xs-4 text-center">
-                <a href="#">Sales</a>
-              </div>
-              <div class="col-xs-4 text-center">
-                <a href="#">Friends</a>
-              </div>
-            </div>
-            <!-- /.row -->
-          </li>
           <!-- Menu Footer-->
           <li class="user-footer">
             <div class="pull-left">
@@ -111,7 +85,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <img src="{{asset('img/avatar.png')}}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">{{Auth::user()->name}}</a>
         </div>
       </div>
 
@@ -136,6 +110,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
               <li class="nav-item has-treeview">
               <a href="{{url('/admin/users/create')}}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>Create</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <p>
+                Role
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+              <a href="{{url('/admin/role/')}}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>All</p>
+                </a>
+              </li>
+              <li class="nav-item has-treeview">
+              <a href="{{url('/admin/role/create')}}" class="nav-link">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>Create</p>
                 </a>
@@ -346,6 +342,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @yield('datatable-script')
 <!-- REQUIRED SCRIPTS -->
 <script src="{{asset('js/app.js')}}"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="{{asset('libs/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('libs/js/dataTables.bootstrap4.min.js')}}"></script>
+<script src="{{asset('libs/js/costum.js')}}"></script>
 </body>
 </html>
