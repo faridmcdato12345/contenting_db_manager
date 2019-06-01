@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Illuminate\Http\Request;
 use App\Role;
+use App\User;
 use DataTables;
 use function compact;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+
 class AdminUserController extends Controller
 {
     /**
@@ -16,25 +20,42 @@ class AdminUserController extends Controller
      */
     public function index(Request $request)
     {
-        // $users = User::all();
+        //  $users = User::all();
+        $role = Role::pluck('name','id')->all();
         // return view('admin.users.index', compact('users'));
         if ($request->ajax()) {
-            $data = User::latest()->get();
+            $data = User::all();
+            
             return Datatables::of($data)
                     ->addIndexColumn()
-                    ->addColumn('action', function($row){
-   
-                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
-   
-                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
-    
-                            return $btn;
+                    ->editColumn('role_id', function($row){
+                        $roleName = DB::table('roles')->where('id',$row->role_id)->value('name');
+                        return $roleName;
                     })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            
+                    ->addColumn('status', function($row){
+                        if($row->is_active == 1){
+                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm userActive disabled">Active</a>';
+                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm userInActive">In Active</a>';
+                        }
+                        else{
+                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm userActive">Active</a>';
+                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm userInActive disabled">In Active</a>';
+                        }
+                        
+                        return $btn;
+                    })  
+                    ->addColumn('actions', function($row){
+   
+                        $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
+
+                        $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Delete</a>';
+ 
+                         return $btn;
+                    })  
+                    ->rawColumns(['status','actions'])
+                    ->make(true);    
         }
-        return view('admin.users.index');
+        return view('admin.users.index', compact('data','role'));
     }
 
     /**
@@ -45,7 +66,8 @@ class AdminUserController extends Controller
     public function create()
     {
         $roles = Role::pluck('name','id')->all();
-        return view('admin.users.create',compact('roles'));
+        $randompassword =  Hash::make(str_random(8));
+        return view('admin.users.create',compact('roles','randompassword'));
     }
 
     /**
@@ -56,7 +78,23 @@ class AdminUserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(trim($request->password) == ''){
+            $request->except('password');
+        }
+        else{
+            $input = $request->all();
+            $input['password'] = bcrypt($request->password);
+        }
+
+        if($file = $request->file('photo_id')){
+            $name = time().$file->getClientOriginalName();
+            $file->move('images',$name);
+            $photo = Photo::create(['path'=>$name]);
+            $input['photo_id']=$photo->id;
+        }
+        User::create($input);
+        Session::flash('created_user',$input['name'].' has been created');
+        return redirect('admin/users/create');
     }
 
     /**
@@ -78,7 +116,8 @@ class AdminUserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        return response()->json($user);
     }
 
     /**
@@ -89,8 +128,13 @@ class AdminUserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        //
+    {   
+        $user = User::findOrFail($id);
+        $role_id = DB::table('roles')->where('id',$request->role_id)->value('id');
+        $input['role_id'] = $role_id;
+        $input = $request->all();
+        $user->update($input);
+        return response()->json(['success'=>'Product saved successfully.']);
     }
 
     /**
@@ -101,6 +145,9 @@ class AdminUserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id)->delete();
+     
+        return response()->json(['success'=>'deleted successfully.']);
+        
     }
 }

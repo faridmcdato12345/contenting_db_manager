@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content-header')
-<div class="container-fluid">
+<div class="container-fluid admin-client-index">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0 text-dark">View and Search client</h1>
@@ -15,15 +15,14 @@
 </div>
 @endsection
 @section('content')
-    <p><a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Create New Client</a></p>
-    <table class="table table-bordered data-table">
+   <table class="table table-bordered data-table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-                <th width="280px">Action</th>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>CREATED AT</th>
+                <th>UPDATED AT</th>
+                <th width="280px">ACTIONS</th>
             </tr>
         </thead>
         <tbody>

@@ -43,7 +43,7 @@ class AdminRoleController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.role.create');
     }
 
     /**
@@ -54,7 +54,10 @@ class AdminRoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+        Role::create($input);
+        Session::flash('created_role',$input['name'].' role has been created');
+        return redirect('admin/role/create');
     }
 
     /**

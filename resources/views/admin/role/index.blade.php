@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content-header')
-<div class="container-fluid">
+<div class="container-fluid admin-role-index">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0 text-dark">View and Search Role</h1>
@@ -15,7 +15,6 @@
 </div>
 @endsection
 @section('content')
-    <p><a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Create New Role</a></p>
     <table class="table table-bordered data-table">
         <thead>
             <tr>
@@ -31,34 +30,34 @@
     </table>
 @endsection
 @section('modal')
-<div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title" id="modelHeading"></h4>
-        </div>
-        <div class="modal-body">
-            <form id="productForm" name="productForm" class="form-horizontal">
-               <input type="hidden" name="product_id" id="product_id">
-                <div class="form-group">
-                    <label for="name" class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" value="" maxlength="50" required="">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeading"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="productForm" name="productForm" class="form-horizontal">
+                <input type="hidden" name="product_id" id="product_id">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" value="" maxlength="50" required="">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Details</label>
-                    <div class="col-sm-12">
-                        <textarea id="detail" name="detail" required="" placeholder="Enter Details" class="form-control"></textarea>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Details</label>
+                        <div class="col-sm-12">
+                            <textarea id="detail" name="detail" required="" placeholder="Enter Details" class="form-control"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-offset-2 col-sm-10">
-                 <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
-                 </button>
-                </div>
-            </form>
+                    <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
+                    </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 @endsection
 @section('datatable-script')
 <script type="text/javascript">

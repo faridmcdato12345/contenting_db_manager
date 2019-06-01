@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content-header')
-<div class="container-fluid">
+<div class="container-fluid admin-user-index">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0 text-dark">Users</h1>
@@ -15,17 +15,18 @@
 </div><!-- /.container-fluid -->
 @endsection
 @section('content')
-    <p><a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Create New User</a></p>
+
     <table class="table table-bordered data-table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Email Address</th>
-                <th>Role</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-                <th width="280px">Action</th>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>EMAIL ADDRESS</th>
+                <th>ROLE</th>
+                <th>CREATED AT</th>
+                <th>UPDATED AT</th>
+                <th width="280px">STATUS</th>
+                <th width="280px">ACTIONS</th>
             </tr>
         </thead>
         <tbody>
@@ -33,34 +34,36 @@
     </table>
 @endsection
 @section('modal')
-<div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title" id="modelHeading"></h4>
-        </div>
-        <div class="modal-body">
-            <form id="productForm" name="productForm" class="form-horizontal">
-               <input type="hidden" name="product_id" id="product_id">
-                <div class="form-group">
-                    <label for="name" class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" value="" maxlength="50" required="">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeading"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="productForm" name="productForm" class="form-horizontal">
+                <input type="hidden" name="product_id" id="id">
+                    <div class="form-group">
+                        <label for="name" class="control-label">Name</label>
+                        <div class="col-sm-offset-2">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" value="" maxlength="50" required="">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Details</label>
-                    <div class="col-sm-12">
-                        <textarea id="detail" name="detail" required="" placeholder="Enter Details" class="form-control"></textarea>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2">
+                            {!! Form::label('role_id','Role:') !!}
+                            {!! Form::select('role_id',$role ,null,['class'=>'form-control role']) !!}
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-offset-2 col-sm-10">
-                 <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
-                 </button>
-                </div>
-            </form>
+                    <div class="col-sm-offset-2">
+                    <button type="submit" class="btn btn-primary form-control" id="updateBtn" value="create">
+                    </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+
 @endsection
 @section('datatable-script')
 <script type="text/javascript">
@@ -69,7 +72,7 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-      });
+        });
       var table = $('.data-table').DataTable({
           processing: true,
           serverSide: true,
@@ -81,38 +84,45 @@
               {data: 'role_id', name: 'role_id'},
               {data: 'created_at', name: 'created at'},
               {data: 'updated_at', name: 'updated at'},
-              {data: 'action', name: 'action', orderable: false, searchable: true},
+              {data: 'status', name: 'status', orderable: false, searchable: true},
+              {data: 'actions', name: 'actions', orderable: false, searchable: true},
           ]
       });
        
-      $('#createNewProduct').click(function () {
+      $('#createNewUser').click(function () {
           $('#saveBtn').val("create-product");
           $('#product_id').val('');
           $('#productForm').trigger("reset");
-          $('#modelHeading').html("Create New Product");
+          $('#modelHeading').html("Create New User");
           $('#ajaxModel').modal('show');
       });
       
-      $('body').on('click', '.editProduct', function () {
-        var product_id = $(this).data('id');
-        $.get("{{ route('clients.index') }}" +'/' + product_id +'/edit', function (data) {
-            $('#modelHeading').html("Edit Product");
-            $('#saveBtn').val("edit-user");
+      $('body').on('click', '.editUser', function () {
+        var user_id = $(this).data('id');
+        $('#id').val(user_id);
+        var url = "{{route('users.edit',':id')}}";
+        url = url.replace(':id',user_id);
+        $.get(url, function (data) {
+            $('#modelHeading').html("Edit User");
+            $('#updateBtn').html("UPDATE");
             $('#ajaxModel').modal('show');
-            $('#product_id').val(data.id);
             $('#name').val(data.name);
-            $('#detail').val(data.detail);
+            $('.role').val(data.role_id);
+            $('#role').val(data.role_id);
         })
      });
       
-      $('#saveBtn').click(function (e) {
+      $('#updateBtn').click(function (e) {
+            var u = $('#id').val();
+            var urlUpdate = "{{route('users.update',':id')}}";
+            urlUpdate = urlUpdate.replace(':id',u);
           e.preventDefault();
-          $(this).html('Sending..');
+          $(this).html('Updating..');
       
           $.ajax({
             data: $('#productForm').serialize(),
-            url: "{{ route('users.store') }}",
-            type: "POST",
+            url: urlUpdate,
+            type: "PUT",
             dataType: 'json',
             success: function (data) {
        
@@ -123,28 +133,31 @@
             },
             error: function (data) {
                 console.log('Error:', data);
-                $('#saveBtn').html('Save Changes');
+                $('#updateBtn').html('User Updated');
             }
         });
       });
       
-      $('body').on('click', '.deleteProduct', function () {
-       
-          var product_id = $(this).data("id");
-          confirm("Are You sure want to delete !");
-        
-          $.ajax({
-              type: "DELETE",
-              url: "{{ route('users.store') }}"+'/'+product_id,
-              success: function (data) {
-                  table.draw();
-              },
-              error: function (data) {
-                  console.log('Error:', data);
-              }
-          });
-      });
-       
+      $('body').on('click', '.deleteUser', function () {
+          var user_id = $(this).data("id");
+          console.log(user_id);
+          var user_name = $(this).data("name");
+          var url_destroy = "{{route('users.destroy',':id')}}";
+            url_destroy = url_destroy.replace(':id',user_id);
+          if (confirm("Are You sure want to delete this user?") == true) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url_destroy,
+                    dataType: 'json',
+                    success: function (data) {
+                        table.draw();
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            } 
+      }); 
     });
   </script>
 @endsection

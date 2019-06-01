@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content-header')
-<div class="container-fluid">
+<div class="container-fluid admin-url-index">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0 text-dark">View and Search urls</h1>
@@ -15,7 +15,6 @@
 </div>
 @endsection
 @section('content')
-    <p><a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Create New URL</a></p>
     <table class="table table-bordered data-table">
         <thead>
             <tr>
