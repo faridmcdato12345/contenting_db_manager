@@ -1,4 +1,6 @@
 <?php
+
+use Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,9 +15,7 @@
 Route::get('/', function () {
     return redirect('/home');
 });
-
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware'=>'admin'], function (){
     Route::resource('/admin/users', 'AdminUserController');
