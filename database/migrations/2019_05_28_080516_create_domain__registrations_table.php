@@ -17,7 +17,7 @@ class CreateDomainRegistrationsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('account_id')->nullable()->unsigned();
             $table->string('url');
-            $table->string('username/email');
+            $table->string('username');
             $table->string('password');
             $table->timestamps();
         });

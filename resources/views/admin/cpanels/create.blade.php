@@ -16,6 +16,9 @@
 </div>
 @endsection
 @section('content')
+@if(Session::has('created_cpanel'))
+<p class="bg-success" style="font-weight: bold;font-size: 16px;padding: 10px 10px;">{{session('created_cpanel')}}</p>
+@endif
     {!! Form::open(['method'=>'POST','action'=>'AdminCpanelController@store','files'=>true]) !!}
         <div class="form-group">
             {!! Form::label('url','URL:') !!}

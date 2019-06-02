@@ -16,6 +16,9 @@
 </div>
 @endsection
 @section('content')
+@if(Session::has('created_domain'))
+<p class="bg-success" style="font-weight: bold;font-size: 16px;padding: 10px 10px;">{{session('created_domain')}}</p>
+@endif
     {!! Form::open(['method'=>'POST','action'=>'AdminDomainController@store','files'=>true]) !!}
         <div class="form-group">
             {!! Form::label('url','URL:') !!}
@@ -31,7 +34,7 @@
             {!! Form::text('password',null,['class'=>'form-control']) !!}
         </div>
         <div class="form-group">
-            {!! Form::submit('Create Cpanel Account',['class'=>'form-control btn btn-primary']) !!}
+            {!! Form::submit('Create Domain Account',['class'=>'form-control btn btn-primary']) !!}
         </div>
     {!! Form::close() !!}
     {{-- @include('includes.errors') --}}

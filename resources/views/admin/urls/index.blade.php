@@ -3,12 +3,12 @@
 <div class="container-fluid admin-url-index">
     <div class="row mb-2">
         <div class="col-sm-6">
-        <h1 class="m-0 text-dark">View and Search urls</h1>
+        <h1 class="m-0 text-dark">View and Search URL Accounts</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('admin/users')}}">admin</a></li>
-            <li class="breadcrumb-item active"><a href="{{url('admin/urls/')}}">urls</a></li>
+            <li class="breadcrumb-item active"><a href="{{url('admin/urls/')}}">url</a></li>
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -22,9 +22,9 @@
                 <th>URL</th>
                 <th>USERNAME</th>
                 <th>PASSWORD</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-                <th width="280px">Action</th>
+                <th>CREATED AT</th>
+                <th>UPDATED AT</th>
+                <th width="280px">ACTION</th>
             </tr>
         </thead>
         <tbody>
@@ -39,21 +39,27 @@
         </div>
         <div class="modal-body">
             <form id="productForm" name="productForm" class="form-horizontal">
-               <input type="hidden" name="product_id" id="product_id">
+               <input type="hidden" name="product_id" id="id">
                 <div class="form-group">
-                    <label for="name" class="col-sm-2 control-label">Name</label>
+                    <label for="name" class="col-sm-2 control-label">Url</label>
                     <div class="col-sm-12">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" value="" maxlength="50" required="">
+                        <input type="text" class="form-control" id="url" name="url" placeholder="Enter Url" value="" maxlength="50" required="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Details</label>
+                    <label class="col-sm-2 control-label">Username</label>
                     <div class="col-sm-12">
-                        <textarea id="detail" name="detail" required="" placeholder="Enter Details" class="form-control"></textarea>
+                        <input type="text" id="username" name="username" required="" placeholder="Enter username" class="form-control">
                     </div>
                 </div>
-                <div class="col-sm-offset-2 col-sm-10">
-                 <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Password</label>
+                    <div class="col-sm-12">
+                        <input type="text" id="password" name="password" required="" placeholder="Enter password" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                 <button type="submit" class="btn btn-primary form-control" id="updateBtn" value="create">Save changes
                  </button>
                 </div>
             </form>
@@ -83,35 +89,32 @@
               {data: 'action', name: 'action', orderable: false, searchable: true},
           ]
       });
-       
-      $('#createNewProduct').click(function () {
-          $('#saveBtn').val("create-product");
-          $('#product_id').val('');
-          $('#productForm').trigger("reset");
-          $('#modelHeading').html("Create New Product");
-          $('#ajaxModel').modal('show');
-      });
-      
-      $('body').on('click', '.editProduct', function () {
-        var product_id = $(this).data('id');
-        $.get("{{ route('clients.index') }}" +'/' + product_id +'/edit', function (data) {
-            $('#modelHeading').html("Edit Product");
-            $('#saveBtn').val("edit-user");
+      $('body').on('click', '.editUrl', function () {
+        var user_id = $(this).data('id');
+        $('#id').val(user_id);
+        var url = "{{route('urls.edit',':id')}}";
+        url = url.replace(':id',user_id);
+        $.get(url, function (data) {
+            $('#modelHeading').html("Edit url Account");
+            $('#updateBtn').html("UPDATE");
             $('#ajaxModel').modal('show');
-            $('#product_id').val(data.id);
-            $('#name').val(data.name);
-            $('#detail').val(data.detail);
+            $('#url').val(data.url);
+            $('#username').val(data.username);
+            $('#password').val(data.password);
         })
      });
       
-      $('#saveBtn').click(function (e) {
+     $('#updateBtn').click(function (e) {
+            var u = $('#id').val();
+            var urlUpdate = "{{route('urls.update',':id')}}";
+            urlUpdate = urlUpdate.replace(':id',u);
           e.preventDefault();
-          $(this).html('Sending..');
+          $(this).html('Updating..');
       
           $.ajax({
             data: $('#productForm').serialize(),
-            url: "{{ route('urls.store') }}",
-            type: "POST",
+            url: urlUpdate,
+            type: "PUT",
             dataType: 'json',
             success: function (data) {
        
@@ -122,26 +125,29 @@
             },
             error: function (data) {
                 console.log('Error:', data);
-                $('#saveBtn').html('Save Changes');
+                $('#updateBtn').html('User Updated');
             }
         });
       });
-      
-      $('body').on('click', '.deleteProduct', function () {
-       
-          var product_id = $(this).data("id");
-          confirm("Are You sure want to delete !");
-        
-          $.ajax({
-              type: "DELETE",
-              url: "{{ route('urls.store') }}"+'/'+product_id,
-              success: function (data) {
-                  table.draw();
-              },
-              error: function (data) {
-                  console.log('Error:', data);
-              }
-          });
+      $('body').on('click', '.deleteUrl', function () {
+          var user_id = $(this).data("id");
+          console.log(user_id);
+          var user_name = $(this).data("name");
+          var url_destroy = "{{route('urls.destroy',':id')}}";
+            url_destroy = url_destroy.replace(':id',user_id);
+          if (confirm("Are You sure want to delete this url account?") == true) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url_destroy,
+                    dataType: 'json',
+                    success: function (data) {
+                        table.draw();
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            } 
       });
        
     });

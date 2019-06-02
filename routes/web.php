@@ -21,6 +21,8 @@ Route::get('/register',function(){
 });
 Route::get('/pinaka-kusog-na-admin','Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('/pinaka-kusog-na-admin','Auth\RegisterController@register')->name('superadminsave');
+Route::post('admin/userprofile/changepass',"UserProfileController@changePass")->name('password.update');
+Route::get('admin/userprofile/changepass','UserProfileController@showChangepassView')->name('userprofile.changepass');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware'=>'admin'], function (){
     Route::resource('/admin/users', 'AdminUserController');
@@ -32,4 +34,5 @@ Route::group(['middleware'=>'admin'], function (){
     Route::resource('/admin/urls', 'AdminUrlController');
     Route::resource('/admin/youtubes', 'AdminYoutubeController');
     Route::resource('/admin/clients', 'AdminClientController');
+    Route::resource('/admin/userprofile', 'UserProfileController');
 });

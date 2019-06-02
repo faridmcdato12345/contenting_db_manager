@@ -23,9 +23,9 @@ class AdminCpanelController extends Controller
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
    
-                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
+                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editCpanel">Edit</a>';
    
-                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteCpanel">Delete</a>';
     
                             return $btn;
                     })
@@ -54,7 +54,10 @@ class AdminCpanelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+        Cpanel::create($input);
+        Session::flash('created_cpanel',$input['url'].' has been created');
+        return redirect('admin/cpanels/create');
     }
 
     /**
@@ -76,7 +79,8 @@ class AdminCpanelController extends Controller
      */
     public function edit($id)
     {
-        //
+        $cpanel = Cpanel::find($id);
+        return response()->json($cpanel);
     }
 
     /**
@@ -88,7 +92,10 @@ class AdminCpanelController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $cpanel = Cpanel::findOrFail($id);
+        $input = $request->all();
+        $cpanel->update($input);
+        return response()->json(['success'=>'update successfully.']);
     }
 
     /**
@@ -99,6 +106,7 @@ class AdminCpanelController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $cpanel = Cpanel::find($id)->delete();
+        return response()->json(['success'=>'deleted successfully.']);
     }
 }

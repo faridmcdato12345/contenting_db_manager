@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Session;
-use App\Domain;
 use DataTables;
+use App\Domain_Registration;
 
 class AdminDomainController extends Controller
 {
@@ -18,14 +17,14 @@ class AdminDomainController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Domain::latest()->get();
+            $data = Domain_Registration::latest()->get();
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
    
-                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
+                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editDomain">Edit</a>';
    
-                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteDomain">Delete</a>';
     
                             return $btn;
                     })
@@ -54,7 +53,10 @@ class AdminDomainController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+        Domain_Registration::create($input);
+        Session::flash('created_domain',$input['url'].' has been created');
+        return redirect('admin/domains/create');
     }
 
     /**
@@ -76,7 +78,8 @@ class AdminDomainController extends Controller
      */
     public function edit($id)
     {
-        //
+        $domain = Domain_Registration::find($id);
+        return response()->json($domain);
     }
 
     /**
@@ -88,7 +91,10 @@ class AdminDomainController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $domain = Domain_Registration::findOrFail($id);
+        $input = $request->all();
+        $domain->update($input);
+        return response()->json(['success'=>'update successfully.']);
     }
 
     /**
@@ -99,6 +105,7 @@ class AdminDomainController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $domain = Domain_Registration::find($id)->delete();
+        return response()->json(['success'=>'deleted successfully.']);
     }
 }

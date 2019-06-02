@@ -14,6 +14,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{asset('libs/css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{asset('libs/css/dataTables.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('libs/css/jquery.dataTables.min.css')}}">
+  <link rel="stylesheet" href="{{asset('libs/css/style.css')}}">
   <link rel="stylesheet" href="{{asset('css/app.css')}}">
   <script src="{{asset('libs/js/jquery.js')}}"></script>
   <script src="{{asset('libs/js/jquery.validate.js')}}"></script>
@@ -53,10 +54,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <!-- Menu Footer-->
           <li class="user-footer">
             <div class="pull-left">
-              <a href="#" class="btn btn-default btn-flat">Profile</a>
+              <a href="{{route('userprofile.index')}}" class="btn btn-default btn-flat" style="width:100%;">Profile</a>
             </div>
             <div class="pull-right">
-                <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="btn btn-default btn-flat">Sign out</a>
+                <a style="width:100%;" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="btn btn-default btn-flat">Sign out</a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     {{ csrf_field() }}
                 </form>
