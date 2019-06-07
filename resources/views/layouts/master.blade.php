@@ -67,20 +67,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </li>
     </ul>
   </nav>
-  <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
     <img src="{{asset('img/logo.png')}}" alt="contenting Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">Contenting</span>
     </a>
-
-    <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
         <img src="{{asset('img/avatar.png')}}" class="img-circle elevation-2" alt="User Image">
@@ -89,12 +82,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <a href="#" class="d-block">{{Auth::user()->name}}</a>
         </div>
       </div>
-
-      <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
+          @can('accounting-superadmin', Auth::user())
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link active">
               <p>
@@ -161,6 +151,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
             </ul>
           </li>
+          @endcan
           <li class="nav-item">
             <a href="#" class="nav-link">
               <p>
@@ -293,11 +284,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
             </ul>
           </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <p>
+                Accounting
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{url('/admin/youtubes/')}}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>All</p>
+                </a>
+              </li>
+              <li class="nav-item has-treeview">
+                <a href="{{url('/admin/youtubes/create')}}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>Create</p>
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
-      <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
   </aside>
 
   <!-- Content Wrapper. Contains page content -->
@@ -306,41 +317,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="content-header">
       @yield('content-header')
     </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
     <div class="content">
       @yield('content')
     </div>
-    <!---modal content--->
     <div class="modal fade" id="ajaxModel" aria-hidden="true">
       @yield('modal')
     </div>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
-
-  <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
     <div class="p-3">
       <h5>Title</h5>
       <p>Sidebar content</p>
     </div>
   </aside>
-  <!-- /.control-sidebar -->
-
-  <!-- Main Footer -->
   <footer class="main-footer">
-    <!-- To the right -->
-    {{-- <div class="float-right d-none d-sm-inline">
-      Anything you want
-    </div> --}}
-    <!-- Default to the left -->
     <strong>Copyright &copy; 2019 <a href="https://contenting.no">contenting.no</a>.</strong> All rights reserved.
   </footer>
 </div>
-<!-- ./wrapper -->
 @yield('datatable-script')
 <!-- REQUIRED SCRIPTS -->
 <script src="{{asset('js/app.js')}}"></script>

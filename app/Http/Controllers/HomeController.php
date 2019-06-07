@@ -27,13 +27,13 @@ class HomeController extends Controller
     {
         // return view('/home');
         if(Auth::check()){
-            if(Auth::user()->isAdmin()){
+            if(Auth::user()->superAdmin()){
                 return redirect('admin/users');
             }
-            // else{
-            //     $client = Client::all();
-            //     return view('home', compact('client'));
-            // }
+            if(Auth::user()->role_id == 3){
+                return redirect('admin/role');
+            }
+            return redirect('admin/cpanels');
         }
     }
 }

@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Gate;
 use App\Role;
 use App\User;
 use DataTables;
 use function compact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Gate as IlluminateGate;
 
 class AdminUserController extends Controller
 {
@@ -20,42 +23,42 @@ class AdminUserController extends Controller
      */
     public function index(Request $request)
     {
-        //  $users = User::all();
-        $role = Role::pluck('name','id')->all();
-        // return view('admin.users.index', compact('users'));
-        if ($request->ajax()) {
-            $data = User::all();
-            
-            return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->editColumn('role_id', function($row){
-                        $roleName = DB::table('roles')->where('id',$row->role_id)->value('name');
-                        return $roleName;
-                    })
-                    ->addColumn('status', function($row){
-                        if($row->is_active == 1){
-                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm userActive disabled">Active</a>';
-                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm userInActive">In Active</a>';
-                        }
-                        else{
-                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm userActive">Active</a>';
-                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm userInActive disabled">In Active</a>';
-                        }
-                        
-                        return $btn;
-                    })  
-                    ->addColumn('actions', function($row){
-   
-                        $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
+        if(Gate::allows('accounting-superadmin',Auth::user())){
+            if ($request->ajax()) {
+                $data = User::all();
+                
+                return Datatables::of($data)
+                        ->addIndexColumn()
+                        ->editColumn('role_id', function($row){
+                            $roleName = DB::table('roles')->where('id',$row->role_id)->value('name');
+                            return $roleName;
+                        })
+                        ->addColumn('status', function($row){
+                            if($row->is_active == 1){
+                                $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm userActive disabled">Active</a>';
+                                $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm userInActive">In Active</a>';
+                            }
+                            else{
+                                $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm userActive">Active</a>';
+                                $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm userInActive disabled">In Active</a>';
+                            }
+                            
+                            return $btn;
+                        })  
+                        ->addColumn('actions', function($row){
+    
+                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
 
-                        $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Delete</a>';
- 
-                         return $btn;
-                    })  
-                    ->rawColumns(['status','actions'])
-                    ->make(true);    
+                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Delete</a>';
+    
+                            return $btn;
+                        })  
+                        ->rawColumns(['status','actions'])
+                        ->make(true);    
+            }
+            $role = Role::pluck('name','id')->all();
+            return view('admin.users.index', compact('data','role'));
         }
-        return view('admin.users.index', compact('data','role'));
     }
 
     /**
@@ -146,8 +149,15 @@ class AdminUserController extends Controller
     public function destroy($id)
     {
         $user = User::find($id)->delete();
-     
-        return response()->json(['success'=>'deleted successfully.']);
+        return response()->json(['success'=>'deleted successfully.']); 
+    }
+
+    public function isActive($id){
+        $user = User::find($id);
+        $input['is_active'] == '1';
+        $user->update($input);
+    }
+    public function inActive($id){
         
     }
 }

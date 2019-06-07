@@ -111,6 +111,27 @@
             $('#role').val(data.role_id);
         })
      });
+     $('.userActive').click(function (e) {
+            var u = $('#id').val();
+            var urlUpdate = "{{route('users.active',':id')}}";
+            urlUpdate = urlUpdate.replace(':id',u);
+          e.preventDefault();
+          $(this).html('Updating..');
+      
+          $.ajax({
+            url: urlUpdate,
+            type: "PUT",
+            dataType: 'json',
+            success: function (data) {
+                table.draw();
+           
+            },
+            error: function (data) {
+                console.log('Error:', data);
+                $('#updateBtn').html('User Updated');
+            }
+        });
+      });
       
       $('#updateBtn').click(function (e) {
             var u = $('#id').val();
@@ -140,7 +161,6 @@
       
       $('body').on('click', '.deleteUser', function () {
           var user_id = $(this).data("id");
-          console.log(user_id);
           var user_name = $(this).data("name");
           var url_destroy = "{{route('users.destroy',':id')}}";
             url_destroy = url_destroy.replace(':id',user_id);

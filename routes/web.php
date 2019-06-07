@@ -35,4 +35,5 @@ Route::group(['middleware'=>'admin'], function (){
     Route::resource('/admin/youtubes', 'AdminYoutubeController');
     Route::resource('/admin/clients', 'AdminClientController');
     Route::resource('/admin/userprofile', 'UserProfileController');
+    Route::patch('admin/users/is_active/{id}','AdminUserController@isActive')->name('user.active');
 });
