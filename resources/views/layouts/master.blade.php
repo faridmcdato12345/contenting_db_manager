@@ -75,18 +75,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </a>
     <div class="sidebar">
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-        <img src="{{asset('img/avatar.png')}}" class="img-circle elevation-2" alt="User Image">
+        <div class="image user-image">
+          <p style="font-size:20px;" class="auth-user">{{substr(Auth::user()->name,0,1)}}</p>
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{Auth::user()->name}}</a>
+          <a href="#" class="d-block" style="margin-top:8px;">{{Auth::user()->name}}</a>
         </div>
       </div>
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          @can('accounting-superadmin', Auth::user())
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
+          @can('superadmin', Auth::user())
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
               <p>
                 Users
                 <i class="right fa fa-angle-left"></i>
@@ -94,7 +94,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-              <a href="{{url('/admin/users/')}}" class="nav-link active">
+              <a href="{{url('/admin/users/')}}" class="nav-link">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>All</p>
                 </a>
@@ -284,6 +284,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
             </ul>
           </li>
+          @can('superadmin', Auth::user())
           <li class="nav-item">
             <a href="#" class="nav-link">
               <p>
@@ -293,19 +294,44 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{url('/admin/youtubes/')}}" class="nav-link">
+                <a href="{{url('/admin/accounting/')}}" class="nav-link">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>All</p>
                 </a>
               </li>
               <li class="nav-item has-treeview">
-                <a href="{{url('/admin/youtubes/create')}}" class="nav-link">
+                <a href="{{url('/admin/accounting/create')}}" class="nav-link">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>Create</p>
                 </a>
               </li>
             </ul>
           </li>
+          @endcan
+          @can('accounting', Auth::user())
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <p>
+                Accounting
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{url('/admin/accounting/')}}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>All</p>
+                </a>
+              </li>
+              <li class="nav-item has-treeview">
+                <a href="{{url('/admin/accounting/create')}}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>Create</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          @endcan
         </ul>
       </nav>
     </div>
@@ -340,5 +366,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{asset('libs/js/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('libs/js/dataTables.bootstrap4.min.js')}}"></script>
 <script src="{{asset('libs/js/costum.js')}}"></script>
+<script type="text/javascript">
+  var backgroundColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+  var textColor = '#ffffff';
+  $('.user-image').css("background-color",backgroundColor);
+  if(backgroundColor == textColor){
+    backgroundColor = generateRandomColor();
+    $('.user-image').css('background-color',backgroundColor);
+  }
+  $('.user-image').css('background-color',backgroundColor);
+  function generateRandomColor(){
+    var textColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+    return textColor;
+  }
+  $('[data-toggle="tooltip"]').tooltip();
+</script>
 </body>
 </html>

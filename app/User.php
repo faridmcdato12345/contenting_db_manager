@@ -42,13 +42,19 @@ class User extends Authenticatable
         return $this->belongsTo('App\Role');
     }
     public function isAdmin(){
-        // if($this->role_id == '1' && $this->is_active == '1'){
+        if($this->role_id == '2'){
             return true;
-        
-        // return false;
+        }
+        return false;
     }
     public function superAdmin(){
         if($this->role_id == '1' && $this->is_active == '1' ){
+            return true;
+        }
+        return false;
+    }
+    public function otherUser(){
+        if($this->role_id >= '3' && $this->is_active == '1'){
             return true;
         }
         return false;

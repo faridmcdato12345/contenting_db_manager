@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use App\Client;
 use DataTables;
+use Gate;
 use function compact;
 
 class AdminClientController extends Controller
@@ -18,26 +20,26 @@ class AdminClientController extends Controller
      */
     public function index(Request $request)
     {
-        // $clients = Client::all();
-        // return view('admin.clients.index', compact('clients'));
-
-        if ($request->ajax()) {
-            $data = Client::latest()->get();
-            return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-   
-                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
-   
-                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+        if(Gate::allows('superadmin',Auth::user())){
+            if ($request->ajax()) {
+                $data = Client::latest()->get();
+                return Datatables::of($data)
+                        ->addIndexColumn()
+                        ->addColumn('action', function($row){
     
-                            return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            
+                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
+    
+                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+        
+                                return $btn;
+                        })
+                        ->rawColumns(['action'])
+                        ->make(true);
+                
+            }
+            return view('admin.clients.index');
         }
-        return view('admin.clients.index');
+        return abort(403, 'You are not authorized to visit this page');
         
     }
 

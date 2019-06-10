@@ -20,6 +20,12 @@ class Admin
             if(Auth::user()->isAdmin()){
                 return $next($request);
             }
+            if(Auth::user()->superAdmin()){
+                return $next($request);
+            }
+            if(Auth::user()->otherUser()){
+                return $next($request);
+            }
         }
         return redirect('/');
     }

@@ -30,10 +30,10 @@ class HomeController extends Controller
             if(Auth::user()->superAdmin()){
                 return redirect('admin/users');
             }
-            if(Auth::user()->role_id == 3){
-                return redirect('admin/role');
+            else if(Auth::user()->isAdmin()){
+                return redirect('admin/cpanels');
             }
-            return redirect('admin/cpanels');
+            return redirect('admin/accounting');
         }
     }
 }

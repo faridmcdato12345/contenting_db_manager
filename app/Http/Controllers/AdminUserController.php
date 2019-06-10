@@ -23,9 +23,9 @@ class AdminUserController extends Controller
      */
     public function index(Request $request)
     {
-        if(Gate::allows('accounting-superadmin',Auth::user())){
+        if(Gate::allows('superadmin',Auth::user())){
+            $data = User::all();
             if ($request->ajax()) {
-                $data = User::all();
                 
                 return Datatables::of($data)
                         ->addIndexColumn()
@@ -47,18 +47,21 @@ class AdminUserController extends Controller
                         })  
                         ->addColumn('actions', function($row){
     
-                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
+                            $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" data-placement="top" title="Edit user" class="edit btn btn-primary btn-sm editUser "><i class="fas fa-user-edit"></i></a>';
 
-                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Delete</a>';
+                            $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" data-placement="top" title="Delete user" class="btn btn-danger btn-sm deleteUser"><i class="fas fa-user-minus"></i></a>';
     
                             return $btn;
                         })  
                         ->rawColumns(['status','actions'])
                         ->make(true);    
+                
+                
             }
             $role = Role::pluck('name','id')->all();
-            return view('admin.users.index', compact('data','role'));
+            return view('admin.users.index',compact('data','role'));
         }
+        return abort(403, 'You are not authorized to visit this page');
     }
 
     /**
@@ -151,13 +154,16 @@ class AdminUserController extends Controller
         $user = User::find($id)->delete();
         return response()->json(['success'=>'deleted successfully.']); 
     }
-
     public function isActive($id){
         $user = User::find($id);
-        $input['is_active'] == '1';
-        $user->update($input);
+        $user->is_active = '1';
+        $user->save();
+        return response()->json(['success'=>'status updated.']);
     }
     public function inActive($id){
-        
+        $user = User::find($id);
+        $user->is_active = '0';
+        $user->save();
+        return response()->json(['success'=>'status updated.']);
     }
 }

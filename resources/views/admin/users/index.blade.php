@@ -111,20 +111,37 @@
             $('#role').val(data.role_id);
         })
      });
-     $('.userActive').click(function (e) {
-            var u = $('#id').val();
-            var urlUpdate = "{{route('users.active',':id')}}";
-            urlUpdate = urlUpdate.replace(':id',u);
-          e.preventDefault();
-          $(this).html('Updating..');
-      
-          $.ajax({
+     $('body').on('click','.userActive',function () {
+        var u = $(this).data('id');
+        var urlUpdate = "{{route('user.active',':id')}}";
+        urlUpdate = urlUpdate.replace(':id',u);
+        $(this).html('Updating..');
+        $.ajax({
             url: urlUpdate,
-            type: "PUT",
+            type: "PATCH",
             dataType: 'json',
             success: function (data) {
                 table.draw();
-           
+            },
+            error: function (data) {
+                console.log('Error:', data);
+                $('#updateBtn').html('User Updated');
+            }
+        });
+      });
+      $('body').on('click','.userInActive',function () {
+        var u = $(this).data('id');
+        var urlUpdate = "{{route('user.inactive',':id')}}";
+        urlUpdate = urlUpdate.replace(':id',u);
+        $(this).html('Updating..');
+    
+            $.ajax({
+            url: urlUpdate,
+            type: "PATCH",
+            dataType: 'json',
+            success: function (data) {
+                table.draw();
+            
             },
             error: function (data) {
                 console.log('Error:', data);

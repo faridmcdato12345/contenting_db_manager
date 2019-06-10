@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Gate;
 use App\Role;
 use DataTables;
 
@@ -17,23 +19,24 @@ class AdminRoleController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $data = Role::latest()->get();
-            return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-   
-                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
-   
-                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+        if(Gate::allows('superadmin',Auth::user())){
+            if ($request->ajax()) {
+                $data = Role::latest()->get();
+                return Datatables::of($data)
+                        ->addIndexColumn()
+                        ->addColumn('action', function($row){
     
-                            return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            
+                            $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><i class="fas fa-trash-alt"></i></a>';
+        
+                                return $btn;
+                        })
+                        ->rawColumns(['action'])
+                        ->make(true);
+                
+            }
+            return view('admin.role.index');
         }
-        return view('admin.role.index');
+        return abort(403, 'You are not authorized to visit this page');
     }
 
     /**
@@ -102,6 +105,7 @@ class AdminRoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $role = Role::find($id)->delete();
+        return response()->json(['success'=>'deleted successfully.']); 
     }
 }
